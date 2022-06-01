@@ -24,6 +24,7 @@ const SearchPage: React.FC = () => {
         const isOnline = onlineUsers?.some((onlineUser) => onlineUser.userId === user.id)
         return <SearchItem  key = {user.id}
                             id = {user.id}
+                            photoUrl = {user.photoUrl}
                             isOnline = {!!isOnline}
                             login = {user.login}
                 />

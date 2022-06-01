@@ -1,14 +1,13 @@
 import { BaseThunkActionType, PropertiesType } from '../types/redux'
-import { MyProfileData, UIUserData, UserAuthorizationData, UserRegistrationData, UserRegistrationFormData, ValidationError } from '../types/users'
+import { MyProfileData, UserAuthorizationData, UserRegistrationFormData, ValidationError } from '../types/users'
 import authorizationAPI from '../api/authorization'
 import webSocketApi from '../api/webSocket'
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState } from './functions'
 import { startListening as startOnlineStatusListening } from './onlineStatus'
 import { dataReceivingErrMsg, notAuthMsg } from '../config'
-import { MessageData, ReadMessageData, SubscriberType } from '../types/webSocket'
+import { SubscriberType } from '../types/webSocket'
 import { MessageType } from '../types/chats'
-import { getFileFromDataUrl } from '../functions/common'
 
 const initialState = {
     ...createBaseInitialsState<MyProfileData>(true),

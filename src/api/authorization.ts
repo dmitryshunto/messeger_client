@@ -1,5 +1,5 @@
 import { BaseResponse } from "../types/common"
-import { UIUserData, UserAuthorizationData, UserDtoType, UserRegistrationData, UserRegistrationFormData } from "../types/users"
+import { UserAuthorizationData, UserDtoType, UserRegistrationFormData } from "../types/users"
 import axiosInstanse from "./api"
 import axios from "axios"
 import { serverUrl } from "../config"

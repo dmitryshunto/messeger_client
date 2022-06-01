@@ -6,14 +6,21 @@ import { withErrorMessage } from '../../HOC/withErrorMessage';
 import PreloaderPage from '../PreloaderPage/PreloaderPage';
 import { withAuthRedirect } from '../../HOC/withAuthRedirect';
 import { useGettingData } from '../../hooks/useGettingData';
+import defaultAvatar from '../../Images/defaultAvatar.png'
 
 const MyProfile: React.FC = () => {
     const data = useGettingData(getMyProfile, profileSelectors.data, actions.setInitialState)
-    
+    const avatarSource = data?.photoUrl ? data.photoUrl : defaultAvatar
     if(useSelector(profileSelectors.isGettingData)) return <PreloaderPage />
 
     return (
         <div>
+            <div>
+                <img 
+                    src = {avatarSource}
+                    alt = {'avatar'}
+                />
+            </div>
             <div>
                 {data?.login}
             </div>

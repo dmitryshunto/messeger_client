@@ -1,26 +1,15 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { routes } from '../../config';
-import { AppDispatch } from '../../redux/redux';
+import { useSelector } from 'react-redux'
+import { routes } from '../../config'
 import authSelectors from '../../selectors/auth'
-import { logout as logoutThunk } from './../../redux/authorizationReducer';
-import HeaderItem from './HeaderItem/HeaderItem';
-import onlineStatusSelector from '../../selectors/onlineStatus'
+import HeaderItem from './HeaderItem/HeaderItem'
+import ProfileButton from './ProfileButton/ProfileButton'
 
 const Header: React.FC = () => {
-    const dispatch: AppDispatch = useDispatch()
     const data = useSelector(authSelectors.data)
-    
     const login = data?.login
     const newMessagesNumber = data?.newMessages.length
-    const isOnline = useSelector(onlineStatusSelector.myOnlineStatus)
-
-    const logout = () => {
-        dispatch(logoutThunk())
-    }
-
-    const onlineStatus = isOnline ? 'online' : 'offline'
-
+    
     return (
         <div>
             {!login &&
@@ -42,11 +31,7 @@ const Header: React.FC = () => {
                     <HeaderItem route={routes['search']}>
                         Search
                     </HeaderItem>
-                    <HeaderItem route={routes['myProfile']}>
-                        {login}
-                        <button onClick={logout}>Logout</button>
-                        {` ${onlineStatus}`}
-                    </HeaderItem>
+                    <ProfileButton />
                 </>
             }
         </div>
