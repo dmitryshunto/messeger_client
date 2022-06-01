@@ -20,7 +20,7 @@ const actions = {
 
 type ActionType = ReturnType<PropertiesType<typeof actions>>
 
-export const setConnection = (): BaseThunkActionType<ActionType> => async (dispatch) => {
+export const startListening = (): BaseThunkActionType<ActionType> => async (dispatch) => {
     webSocketApi.subscribe((users: UserSocketsData[]) => {
         dispatch(actions.setData(users))
     }, 'onlineUsers')

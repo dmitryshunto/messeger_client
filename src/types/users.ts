@@ -15,11 +15,15 @@ export interface UserRegistrationData extends BaseUserData {
     confirmPassword?: string
 }
 
+export interface UserRegistrationFormData extends UserRegistrationData {
+    avatarUrl: string | null
+}
+
 export interface UIUserData extends BaseUserData {
     id: number
     isActivated: boolean
-    photoUrl: string | null
     privateChatId: string | null
+    photoUrl: string | null
 }
 
 export interface MyProfileData extends UIUserData {

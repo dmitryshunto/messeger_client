@@ -1,13 +1,14 @@
 import { BaseThunkActionType, PropertiesType } from '../types/redux'
-import { MyProfileData, UIUserData, UserAuthorizationData, UserRegistrationData, ValidationError } from '../types/users'
+import { MyProfileData, UIUserData, UserAuthorizationData, UserRegistrationData, UserRegistrationFormData, ValidationError } from '../types/users'
 import authorizationAPI from '../api/authorization'
 import webSocketApi from '../api/webSocket'
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState } from './functions'
-import { setConnection } from './onlineStatus'
+import { startListening as startOnlineStatusListening } from './onlineStatus'
 import { dataReceivingErrMsg, notAuthMsg } from '../config'
 import { MessageData, ReadMessageData, SubscriberType } from '../types/webSocket'
 import { MessageType } from '../types/chats'
+import { getFileFromDataUrl } from '../functions/common'
 
 const initialState = {
     ...createBaseInitialsState<MyProfileData>(true),
@@ -37,8 +38,8 @@ export const authorizeUser = (data: UserAuthorizationData): BaseThunkActionType<
             localStorage.setItem('token', response.data.data.tokens['accessToken'])
             dispatch(actions.setErrorMessage(null))
             webSocketApi.start(response.data.data.tokens.accessToken)
+            dispatch(startOnlineStatusListening())
             dispatch(startListening())
-            dispatch(setConnection())
         } else {
             dispatch(actions.setErrorMessage(dataReceivingErrMsg))
         }
@@ -50,7 +51,7 @@ export const authorizeUser = (data: UserAuthorizationData): BaseThunkActionType<
     })
 }
 
-export const createUser = (data: UserRegistrationData): BaseThunkActionType<ActionType> => async (dispatch) => {
+export const createUser = (data: UserRegistrationFormData): BaseThunkActionType<ActionType> => async (dispatch) => {
     dispatch(actions.setIsGettingData(true))
     authorizationAPI.create(data).then(response => {
         if (response.data.data) {
@@ -59,7 +60,8 @@ export const createUser = (data: UserRegistrationData): BaseThunkActionType<Acti
             localStorage.setItem('token', response.data.data.tokens['accessToken'])
             dispatch(actions.setValidationErrors(null))
             dispatch(actions.setErrorMessage(null))
-            webSocketApi.start(response.data.data.tokens.accessToken)
+            dispatch(startListening())
+            dispatch(startOnlineStatusListening())
         } else {
             dispatch(actions.setErrorMessage('Data recieving error!'))
         }
@@ -91,8 +93,8 @@ export const checkAuth = (): BaseThunkActionType<ActionType> => async (dispatch)
             dispatch(actions.setData(response.data.data.user))
             localStorage.setItem('token', response.data.data.tokens['accessToken'])
             webSocketApi.start(response.data.data.tokens.accessToken)
-            dispatch(setConnection())
             dispatch(startListening())
+            dispatch(startOnlineStatusListening())
         }
     }).catch(error => {
         dispatch(actions.setErrorMessage(notAuthMsg))
@@ -113,7 +115,7 @@ export const startListening = (): BaseThunkActionType<ActionType> => async (disp
 }
 
 export const stopListening = () => {
-    if(messageSentCallback) {
+    if (messageSentCallback) {
         webSocketApi.subscribe(messageSentCallback, 'message')()
         messageSentCallback = null
     }
@@ -139,7 +141,7 @@ export default createReducer(initialState, (builder) => {
             }
         })
         .addCase(actions.messageRead, (state, action) => {
-            if(state.data) {
+            if (state.data) {
                 state.data.newMessages = state.data.newMessages.filter(chatId => chatId !== action.payload)
             }
         })

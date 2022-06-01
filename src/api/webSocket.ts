@@ -71,8 +71,7 @@ const api = {
         createChannel(token)
     },
     stop() {
-        socket?.close()
-        subscribers['onlineStatusChanged'].forEach(cb => cb(false))
+        socket = null
     },
     subscribe: function(cb: SubscriberType<any>, event: EmitEventTypes) {
         subscribers[event].push(cb)
