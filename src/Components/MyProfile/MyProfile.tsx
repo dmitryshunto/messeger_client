@@ -7,6 +7,7 @@ import PreloaderPage from '../PreloaderPage/PreloaderPage';
 import { withAuthRedirect } from '../../HOC/withAuthRedirect';
 import { useGettingData } from '../../hooks/useGettingData';
 import defaultAvatar from '../../Images/defaultAvatar.png'
+import Avatar from '../CommonComponents/Avatar/Avatar';
 
 const MyProfile: React.FC = () => {
     const data = useGettingData(getMyProfile, profileSelectors.data, actions.setInitialState)
@@ -15,12 +16,9 @@ const MyProfile: React.FC = () => {
 
     return (
         <div>
-            <div>
-                <img 
-                    src = {avatarSource}
-                    alt = {'avatar'}
-                />
-            </div>
+            <Avatar 
+                photoUrl={data?.photoUrl}
+            />
             <div>
                 {data?.login}
             </div>

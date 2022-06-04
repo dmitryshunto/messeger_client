@@ -178,7 +178,7 @@ export const resendUnsentMesage = (chatId: number, messageText: string, unsentMe
 }
 
 export default createReducer(initialState, (builder) => {
-    const builderWithBaseCases = addBaseCasesToBuilder(builder, actions, initialState)
+    const builderWithBaseCases = addBaseCasesToBuilder(builder, actions, initialState, stopListening)
     builderWithBaseCases
         .addCase(actions.messageSent, (state, action) => {
             if (state.chatId === action.payload.chatId) {

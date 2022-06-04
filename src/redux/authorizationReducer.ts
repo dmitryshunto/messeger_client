@@ -5,7 +5,7 @@ import webSocketApi from '../api/webSocket'
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState } from './functions'
 import { startListening as startOnlineStatusListening } from './onlineStatus'
-import { dataReceivingErrMsg, notAuthMsg } from '../config'
+import { dataReceivingErrMsg, notAuthMsg, serverError } from '../config'
 import { SubscriberType } from '../types/webSocket'
 import { MessageType } from '../types/chats'
 
@@ -43,7 +43,7 @@ export const authorizeUser = (data: UserAuthorizationData): BaseThunkActionType<
             dispatch(actions.setErrorMessage(dataReceivingErrMsg))
         }
     }).catch(error => {
-        const errorMessage = error.response?.data?.message || 'Unexpected error'
+        const errorMessage = error.response?.data?.message || serverError
         dispatch(actions.setErrorMessage(errorMessage))
     }).finally(() => {
         dispatch(actions.setIsGettingData(false))
@@ -62,11 +62,15 @@ export const createUser = (data: UserRegistrationFormData): BaseThunkActionType<
             dispatch(startListening())
             dispatch(startOnlineStatusListening())
         } else {
-            dispatch(actions.setErrorMessage('Data recieving error!'))
+            dispatch(actions.setErrorMessage(dataReceivingErrMsg))
         }
     }).catch(error => {
-        dispatch(actions.setErrorMessage(error.response?.data?.message))
-        dispatch(actions.setValidationErrors(error.response?.data?.errors))
+        if(error.response) {
+            dispatch(actions.setErrorMessage(error.response?.data?.message))
+            dispatch(actions.setValidationErrors(error.response?.data?.errors))
+        } else {
+            dispatch(actions.setErrorMessage(serverError))
+        }  
     }).finally(() => {
         dispatch(actions.setIsGettingData(false))
     })
@@ -96,7 +100,8 @@ export const checkAuth = (): BaseThunkActionType<ActionType> => async (dispatch)
             dispatch(startOnlineStatusListening())
         }
     }).catch(error => {
-        dispatch(actions.setErrorMessage(notAuthMsg))
+        const errorMessage = error.response?.data?.message || serverError
+        dispatch(actions.setErrorMessage(errorMessage))
     }).finally(() => {
         dispatch(actions.setIsGettingData(false))
     })
@@ -118,20 +123,17 @@ export const stopListening = () => {
         webSocketApi.subscribe(messageSentCallback, 'message')()
         messageSentCallback = null
     }
+    webSocketApi.stop()
 }
 
 export default createReducer(initialState, (builder) => {
-    const builderWithBaseCases = addBaseCasesToBuilder<MyProfileData, typeof initialState>(builder, baseActions)
+    const builderWithBaseCases = addBaseCasesToBuilder<MyProfileData, typeof initialState>(builder, baseActions, initialState, stopListening)
     builderWithBaseCases
         .addCase(actions.setCreatingUserSuccessMesage, (state, acion) => {
             state.creatingUserSuccessMessage = acion.payload
         })
         .addCase(actions.setValidationErrors, (state, action) => {
             state.validationErrors = action.payload
-        })
-        .addCase(actions.setInitialState, (state) => {
-            webSocketApi.stop()
-            return initialState
         })
         .addCase(actions.messageSent, (state, action) => {
             const newMessages = state.data?.newMessages

@@ -34,7 +34,7 @@ class Wrapper<D> {
 
 type BaseActions<D> = ReturnType<Wrapper<D>['baseActions']>
 
-export function addBaseCasesToBuilder<D, S extends ReducerState<D>>(builder: ActionReducerMapBuilder<S>, actions: BaseActions<D>, initialState?: any) {
+export function addBaseCasesToBuilder<D, S extends ReducerState<D>>(builder: ActionReducerMapBuilder<S>, actions: BaseActions<D>, initialState?: any, stopListening?: () => void) {
     // const actions = createBaseActions<D, S>(reducerKey)
     builder
         .addCase(actions.setData, (state, action) => {
@@ -46,7 +46,13 @@ export function addBaseCasesToBuilder<D, S extends ReducerState<D>>(builder: Act
         .addCase(actions.setErrorMessage, (state, action) => {
             state.errorMessage = action.payload
         })
-    if (initialState) builder.addCase(actions.setInitialState, () => initialState)
+    if (initialState) {
+        const callback = () => {
+            if(stopListening) stopListening()
+            return initialState
+        }
+        builder.addCase(actions.setInitialState, callback)
+    } 
     return builder
 }
 

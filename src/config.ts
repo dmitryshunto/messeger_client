@@ -15,3 +15,6 @@ export const SEARCH_USER_PORTION_SIZE = 5
 export const APP_NAME = 'Thomas Messenger'
 export const notAuthMsg = 'You are not authorized!'
 export const dataReceivingErrMsg = 'Data receiving error!'
+export const serverError = 'Server error!'
+
+export const avatarFormFieldName = 'avatar'

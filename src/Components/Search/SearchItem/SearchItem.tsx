@@ -16,9 +16,9 @@ const SearchItem: React.FC<Props> = (props) => {
             <Link to = {`${routes['profile']}${props.id}`}>
                 {props.login}
             </Link>
-            <Avatar 
+            {/* <Avatar 
                 photoUrl={props.photoUrl}
-            />
+            /> */}
             {props.isOnline ? ' V' : ' X'}
         </div>
     )

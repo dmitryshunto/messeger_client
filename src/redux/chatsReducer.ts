@@ -46,8 +46,19 @@ export const startListening = (): BaseThunkActionType<ActionType> => async (disp
     }
 }
 
+export const stopListening = () => {
+    if (messageCallback) {
+        webSocketApi.subscribe(messageCallback, 'message')()
+        messageCallback = null
+    }
+    if (chatCreatedCallback) {
+        webSocketApi.subscribe(chatCreatedCallback, 'chatCreated')()
+        chatCreatedCallback = null
+    }
+}
+
 export default createReducer(initialState, (builder) => {
-    const builderWithBaseCases = addBaseCasesToBuilder(builder, actions, initialState)
+    const builderWithBaseCases = addBaseCasesToBuilder(builder, actions, initialState, stopListening)
     builderWithBaseCases
         .addCase(actions.newMessage, (state, action) => {
             const chat = state.data?.find(chat => chat.id === action.payload)
@@ -56,7 +67,7 @@ export default createReducer(initialState, (builder) => {
             }           
         })
         .addCase(actions.newChat, (state, action) => {
-            if(state.data) state.data = [action.payload, ... state.data]
+            if(state.data) state.data = [action.payload, ...state.data]
             else state.data = [action.payload]
         })
 })

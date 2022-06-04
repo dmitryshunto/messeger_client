@@ -2,7 +2,7 @@ import { BaseResponse } from "../types/common"
 import { UserAuthorizationData, UserDtoType, UserRegistrationFormData } from "../types/users"
 import axiosInstanse from "./api"
 import axios from "axios"
-import { serverUrl } from "../config"
+import { avatarFormFieldName, serverUrl } from "../config"
 import { getFileFromDataUrl } from "../functions/common"
 
 const api = {
@@ -13,7 +13,7 @@ const api = {
             formData.append(key, data[key])
         }
 
-        if (data.avatarUrl) formData.append('avatar', await getFileFromDataUrl(data.avatarUrl))
+        if (data.avatarUrl) formData.append(avatarFormFieldName, await getFileFromDataUrl(data.avatarUrl))
 
         return await axiosInstanse.post<BaseResponse<UserDtoType>>('users/create', formData, {
             headers: { "Content-Type": "multipart/form-data" }

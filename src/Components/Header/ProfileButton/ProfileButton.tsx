@@ -11,7 +11,7 @@ import Avatar from "../../CommonComponents/Avatar/Avatar";
 const ProfileButton: React.FC = () => {
     const dispatch: AppDispatch = useDispatch()
     const data = useSelector(authSelectors.data)
-    
+
     const login = data?.login
 
     const logout = useCallback(() => {
@@ -25,9 +25,9 @@ const ProfileButton: React.FC = () => {
         <div>
             <HeaderItem route={routes['myProfile']}>
                 {login}
-                <Avatar 
+                {/* <Avatar 
                     photoUrl={data?.photoUrl}
-                />
+                /> */}
                 <button onClick={logout}>Logout</button>
             </HeaderItem>
             {` ${onlineStatus}`}

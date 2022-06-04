@@ -21,6 +21,11 @@ function App() {
   const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
+    window.addEventListener('unhandledrejection', (e) =>  console.log(e) )
+    return window.removeEventListener('unhandledrejection', (e) =>  console.log(e) )
+  }, [])
+
+  useEffect(() => {
     dispatch(checkAuth())
     return () => {
       dispatch(actions.setInitialState())
