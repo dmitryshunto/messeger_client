@@ -8,6 +8,10 @@ import { startListening as startOnlineStatusListening } from './onlineStatus'
 import { dataReceivingErrMsg, notAuthMsg, serverError } from '../config'
 import { SubscriberType } from '../types/webSocket'
 import { MessageType } from '../types/chats'
+import UIfx from 'uifx'
+
+const notificationSoundFile = require('../sounds/newPrediction.mp3')
+const notificationSound = new UIfx(notificationSoundFile)
 
 const initialState = {
     ...createBaseInitialsState<MyProfileData>(true),
@@ -100,7 +104,7 @@ export const checkAuth = (): BaseThunkActionType<ActionType> => async (dispatch)
             dispatch(startOnlineStatusListening())
         }
     }).catch(error => {
-        const errorMessage = error.response?.data?.message || serverError
+        const errorMessage = 'Please sing in!'
         dispatch(actions.setErrorMessage(errorMessage))
     }).finally(() => {
         dispatch(actions.setIsGettingData(false))
@@ -139,6 +143,7 @@ export default createReducer(initialState, (builder) => {
             const newMessages = state.data?.newMessages
             if (newMessages && !newMessages.find(chatId => chatId === action.payload)) {
                 newMessages.push(action.payload)
+                notificationSound.play()
             }
         })
         .addCase(actions.messageRead, (state, action) => {

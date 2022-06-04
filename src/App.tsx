@@ -1,7 +1,6 @@
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import Header from './Components/Header/Header';
 import LoginPage from './Components/Login/LoginPage'
 import { checkAuth, actions } from './redux/authorizationReducer';
 import { AppDispatch } from './redux/redux'
@@ -16,13 +15,15 @@ import Chats from './Components/ChatsPage/Chats/Chats';
 import MessagesPage from './Components/ChatsPage/Messages/Messages';
 import UserProfile from './Components/UserProfile/UserProfile';
 import StartChat from './Components/StartChat/StartChat';
+import { Layout } from 'antd'
+import MySider from './Components/Sider/Sider';
 
 function App() {
   const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
-    window.addEventListener('unhandledrejection', (e) =>  console.log(e) )
-    return window.removeEventListener('unhandledrejection', (e) =>  console.log(e) )
+    window.addEventListener('unhandledrejection', (e) => console.log(e))
+    return window.removeEventListener('unhandledrejection', (e) => console.log(e))
   }, [])
 
   useEffect(() => {
@@ -36,19 +37,24 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path={routes['chats']} element={<ChatsPage />}>
-          <Route index element = {<Chats />} />
-          <Route path = {`:chatId`} element={<MessagesPage />} />
-        </Route>
-        <Route path={`${routes['profile']}:id`} element={<UserProfile />} />
-        <Route path={routes['login']} element={<LoginPage />} />
-        <Route path={routes['myProfile']} element={<MyProfile />} />
-        <Route path={routes['registration']} element={<RegistrationPage />} />
-        <Route path={routes['search']} element={<SearchPage />} />
-        <Route path={`${routes['startChat']}/:companionId`} element={<StartChat />} />
-      </Routes>
+      <Layout>
+          <MySider />
+        
+
+        
+        <Routes>
+          <Route path={routes['chats']} element={<ChatsPage />}>
+            <Route index element={<Chats />} />
+            <Route path={`:chatId`} element={<MessagesPage />} />
+          </Route>
+          <Route path={`${routes['profile']}:id`} element={<UserProfile />} />
+          <Route path={routes['login']} element={<LoginPage />} />
+          <Route path={routes['myProfile']} element={<MyProfile />} />
+          <Route path={routes['registration']} element={<RegistrationPage />} />
+          <Route path={routes['search']} element={<SearchPage />} />
+          <Route path={`${routes['startChat']}/:companionId`} element={<StartChat />} />
+        </Routes>
+      </Layout>
     </BrowserRouter>
 
   );
