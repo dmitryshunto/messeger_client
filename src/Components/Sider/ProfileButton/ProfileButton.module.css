@@ -1,0 +1,36 @@
+.profileButton {
+    background-color: cadetblue;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+.profileButton > div:first-child {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.loginRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: aliceblue;
+    font-size: medium;
+    font-weight: bolder;
+    padding-left: 16px;
+    padding-right: 8px;
+}
+
+.onlineStatus {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.online {
+    background-color: rgb(0, 255, 0);
+}
+
+.offline {
+    background-color: gray;
+}

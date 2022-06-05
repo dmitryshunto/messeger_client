@@ -15,7 +15,7 @@ import { routes } from '../../config'
 import MenuLabel from './MenuItem/MenuItem'
 import type { MenuProps } from 'antd';
 import ProfileButton from './ProfileButton/ProfileButton'
-import {logout as logoutThunk} from '../../redux/authorizationReducer'
+import { logout as logoutThunk } from '../../redux/authorizationReducer'
 import { AppDispatch } from '../../redux/redux'
 
 type MenuItemType = Required<MenuProps>['items'][number]
@@ -24,43 +24,46 @@ const { Sider } = Layout
 
 const getMenuItem = (route: string, children: React.ReactNode, icon?: React.ReactNode, onClick?: () => void): MenuItemType => {
     const label = (
-        <MenuLabel 
-            children = {children}
-            route = {route}
+        <MenuLabel
+            children={children}
+            route={route}
         />
     )
-    return {label, key: route, icon, onClick}
+    return { label, key: route, icon, onClick }
 }
 
 
 const unauthorizedUserMenuItems: MenuItemType[] = [
     getMenuItem(routes['login'], 'Login', <LoginOutlined />),
-    getMenuItem(routes['registration'], 'Registration', <UserAddOutlined />), 
+    getMenuItem(routes['registration'], 'Registration', <UserAddOutlined />),
 ]
 
 const messageMenuItemContent = (newMessagesNumber: number | undefined) => {
-    if(newMessagesNumber) return `Messages ${newMessagesNumber}`
+    if (newMessagesNumber) return `Messages ${newMessagesNumber}`
     return 'Messages'
-} 
+}
 
-const MySider: React.FC = () => {
+type Props = {
+    collapsed: boolean
+}
+
+const MySider: React.FC<Props> = ({collapsed}) => {
 
     const dispatch: AppDispatch = useDispatch()
     const logout = useCallback(() => {
         dispatch(logoutThunk())
     }, [dispatch])
-    
+
     const data = useSelector(authSelectors.data)
     const login = data?.login
     const newMessagesNumber = data?.newMessages.length
-    const [collapsed, setCollapsed] = useState(false)
-
+    
     const authorizedUserMenuItems: MenuItemType[] = useMemo(() => {
         return [
-            getMenuItem(routes['chats'], messageMenuItemContent(newMessagesNumber), <MailOutlined data={`${newMessagesNumber}`}/>),
+            getMenuItem(routes['chats'], messageMenuItemContent(newMessagesNumber), <MailOutlined data={`${newMessagesNumber}`} />),
             getMenuItem(routes['search'], 'Search', <SearchOutlined />),
-            {label: 'Log out', key: 'Log out', onClick: logout, icon: <UserDeleteOutlined />}
-        ]        
+            { label: 'Log out', key: 'Log out', onClick: logout, icon: <UserDeleteOutlined /> }
+        ]
     }, [newMessagesNumber])
 
     const menuItems = login ? authorizedUserMenuItems : unauthorizedUserMenuItems
@@ -72,11 +75,11 @@ const MySider: React.FC = () => {
             collapsed={collapsed}
             theme='light'
         >
-            <Button type="primary" onClick={() => setCollapsed(!collapsed)} style={{ marginBottom: 16 }}>
-                {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            </Button>
-            {login && <ProfileButton />}
-            <Menu 
+            {login &&
+                <ProfileButton
+                    collapsed = {collapsed}
+                />}
+            <Menu
                 items={menuItems}
             />
         </Sider>

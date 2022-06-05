@@ -1,5 +1,5 @@
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import LoginPage from './Components/Login/LoginPage'
 import { checkAuth, actions } from './redux/authorizationReducer';
@@ -17,6 +17,12 @@ import UserProfile from './Components/UserProfile/UserProfile';
 import StartChat from './Components/StartChat/StartChat';
 import { Layout } from 'antd'
 import MySider from './Components/Sider/Sider';
+import MyFooter from './Components/Footer/Footer';
+import './App.css'
+import MyHeader from './Components/Header/Header';
+
+const { Content } = Layout;
+
 
 function App() {
   const dispatch: AppDispatch = useDispatch()
@@ -33,27 +39,37 @@ function App() {
     }
   }, [dispatch])
 
+  const [collapsed, setCollapsed] = useState(false)
+
   if (useSelector(authSelectors.isGettingData)) return <PreloaderPage />
 
   return (
     <BrowserRouter>
-      <Layout>
-          <MySider />
-        
-
-        
-        <Routes>
-          <Route path={routes['chats']} element={<ChatsPage />}>
-            <Route index element={<Chats />} />
-            <Route path={`:chatId`} element={<MessagesPage />} />
-          </Route>
-          <Route path={`${routes['profile']}:id`} element={<UserProfile />} />
-          <Route path={routes['login']} element={<LoginPage />} />
-          <Route path={routes['myProfile']} element={<MyProfile />} />
-          <Route path={routes['registration']} element={<RegistrationPage />} />
-          <Route path={routes['search']} element={<SearchPage />} />
-          <Route path={`${routes['startChat']}/:companionId`} element={<StartChat />} />
-        </Routes>
+      <Layout className='siteLayout'>
+        <MyHeader 
+          collapsed = {collapsed}
+          setCollapsed = {setCollapsed}
+        />
+        <Layout>
+          <MySider 
+            collapsed = {collapsed}
+          />
+          <Content>
+            <Routes>
+              <Route path={routes['chats']} element={<ChatsPage />}>
+                <Route index element={<Chats />} />
+                <Route path={`:chatId`} element={<MessagesPage />} />
+              </Route>
+              <Route path={`${routes['profile']}:id`} element={<UserProfile />} />
+              <Route path={routes['login']} element={<LoginPage />} />
+              <Route path={routes['myProfile']} element={<MyProfile />} />
+              <Route path={routes['registration']} element={<RegistrationPage />} />
+              <Route path={routes['search']} element={<SearchPage />} />
+              <Route path={`${routes['startChat']}/:companionId`} element={<StartChat />} />
+            </Routes>
+          </Content>
+        </Layout>
+        <MyFooter />
       </Layout>
     </BrowserRouter>
 
