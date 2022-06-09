@@ -23,6 +23,7 @@ export interface ChatData {
     id: number
     name: string
     newMessages: number | null
+    chatPhotoUrl: string | null
 }
 
 export interface MembersData {

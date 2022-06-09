@@ -1,9 +1,7 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Layout, Menu } from 'antd'
+import { Layout, Menu } from 'antd'
 import {
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
     LoginOutlined,
     UserAddOutlined,
     MailOutlined,
@@ -50,9 +48,9 @@ type Props = {
 const MySider: React.FC<Props> = ({collapsed}) => {
 
     const dispatch: AppDispatch = useDispatch()
-    const logout = useCallback(() => {
+    const logout = () => {
         dispatch(logoutThunk())
-    }, [dispatch])
+    } 
 
     const data = useSelector(authSelectors.data)
     const login = data?.login

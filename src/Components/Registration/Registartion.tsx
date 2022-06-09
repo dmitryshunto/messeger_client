@@ -12,7 +12,7 @@ import FormItem from './FormItem/FormItem'
 import { getValidationErrorByFieldName } from '../../functions/common'
 import { Rule } from 'antd/lib/form'
 import ErrorMessage from '../ErrorMessage/ErrorMessage'
-import AvatarEditor from '../CommonComponents/AvatarEditor/AvatarEditor'
+import AvatarEditor from 'react-avatar-edit'
 
 type FieldDataItem = {
     isPassword: boolean
@@ -119,6 +119,8 @@ const RegistrationPage: React.FC = () => {
                 >
                     <AvatarEditor 
                         onCrop={onCrop}
+                        width = {300}
+                        height = {300}
                     />
                 </Form.Item>
                 <Form.Item>

@@ -5,13 +5,13 @@ import { AppDispatch } from '../../redux/redux'
 import { actions, findUsers } from '../../redux/searchReducer';
 import usersSelectors from '../../selectors/users'
 import SearchItem from './SearchItem/SearchItem';
-import Input from './Input/Input';
+import SearchInput from './SearchInput/SearchInput';
 import { withErrorMessage } from '../../HOC/withErrorMessage';
 import onlineStatusSelectors from '../../selectors/onlineStatus'
 
 const SearchPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch()
-   
+    
     useEffect(() => {
         return () => {
             dispatch(actions.setInitialState())
@@ -36,7 +36,7 @@ const SearchPage: React.FC = () => {
 
     return (
         <div>
-            <Input 
+            <SearchInput 
                 callback={onInputChange}
             />
             {

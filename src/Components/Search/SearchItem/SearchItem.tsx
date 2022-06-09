@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { routes } from '../../../config'
-import { Avatar } from 'antd';
+import css from '../SearchPage.module.css'
+import OnlineStatus from '../../CommonComponents/OnlineStatus/OnlineStatus';
+import ShowAvatar from '../../CommonComponents/ShowAvatar/ShowAvatar';
 
 type Props = {
     isOnline: boolean
@@ -12,15 +14,21 @@ type Props = {
 
 const SearchItem: React.FC<Props> = (props) => {
     return (
-        <div>
-            <Link to = {`${routes['profile']}${props.id}`}>
-            <Avatar 
-                src = {props.photoUrl}
-                // icon = {}    
+        <div className={css.searchItem}>
+            <Link to={`${routes['profile']}${props.id}`}>
+                <ShowAvatar
+                    src={props.photoUrl}
                 />
-                {props.login}
+                <div className = {css.userLogin}>
+                    <div className = {css.test}>
+                        {props.login}
+                    </div>
+                    <OnlineStatus
+                        onlineStatus={props.isOnline}
+                    />
+                </div>
             </Link>
-            {props.isOnline ? ' V' : ' X'}
+
         </div>
     )
 }

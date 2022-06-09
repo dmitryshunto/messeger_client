@@ -1,9 +1,12 @@
 import { ActionReducerMapBuilder, createAction } from "@reduxjs/toolkit"
 import { AxiosResponse } from "axios";
+import { EmitEventTypes } from "../api/webSocket";
 import { dataReceivingErrMsg } from "../config";
-import { MessageType, UIMessageData } from "../types/chats";
 import { AnyFunction, BaseResponse } from "../types/common";
-import { ReducerState, ThunkType } from './../types/redux'
+import { SubscriberType } from "../types/webSocket";
+import { EventHandlersType, ReducerState, ThunkType } from './../types/redux'
+import webSocketApi from '../api/webSocket'
+
 
 export function createBaseInitialsState<D>(isGettingData?: boolean): ReducerState<D> {
     if (isGettingData === undefined) isGettingData = false
@@ -76,10 +79,16 @@ export function apiRequestHandler<D, F extends AnyFunction>(apiRequest: AxiosRes
     })
 }
 
-export const addUIDataToMessage = (message: MessageType): UIMessageData => {
-    return {
-        ...message,
-        isSending: false,
-        sendingSuccess: null
+export function subscribeCallback<D>(eventCallbacks: EventHandlersType, callback: SubscriberType<D>, event: EmitEventTypes) {
+    if(!eventCallbacks[event]) {
+        eventCallbacks[event] = callback
+        webSocketApi.subscribe(callback, event)
+    }
+}
+
+export const unSubscribeCallback = (eventCallbacks: EventHandlersType) => {
+    for(let event in eventCallbacks) {
+        const callback = eventCallbacks[event]
+        webSocketApi.subscribe(callback, event as EmitEventTypes)()
     }
 }

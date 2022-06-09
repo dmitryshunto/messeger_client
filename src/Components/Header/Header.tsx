@@ -1,8 +1,10 @@
 import React from 'react' 
-import { Layout, Menu, Breadcrumb, Button } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { Layout, Button } from 'antd'
+import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons'
+import css from './Header.module.css'
+import { APP_NAME } from '../../config'
 
-const { Header, Content, Footer } = Layout
+const { Header } = Layout
 
 type Props = {
     collapsed: boolean
@@ -11,11 +13,17 @@ type Props = {
 
 const MyHeader: React.FC<Props> = ({collapsed, setCollapsed}) => {
     return (
-        <Header>
-            <Button type="primary" onClick={() => setCollapsed(!collapsed)} >
+        <Header className = {css.header}>
+            <Button 
+                className = {css.collapseBtn}
+                onClick={() => setCollapsed(!collapsed)} 
+                size = 'small'
+            >
                 {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             </Button>
-            
+            <div className = {css.appName}>
+                {APP_NAME}
+            </div>
         </Header>
     )
 }

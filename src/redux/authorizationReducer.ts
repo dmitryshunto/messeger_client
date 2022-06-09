@@ -5,10 +5,11 @@ import webSocketApi from '../api/webSocket'
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState } from './functions'
 import { startListening as startOnlineStatusListening } from './onlineStatus'
-import { dataReceivingErrMsg, notAuthMsg, serverError } from '../config'
+import { dataReceivingErrMsg, serverError } from '../config'
 import { SubscriberType } from '../types/webSocket'
 import { MessageType } from '../types/chats'
 import UIfx from 'uifx'
+import {stopListening as stopOnlineStatusListening} from './onlineStatus'
 
 const notificationSoundFile = require('../sounds/newPrediction.mp3')
 const notificationSound = new UIfx(notificationSoundFile)
@@ -86,6 +87,8 @@ export const logout = (): BaseThunkActionType<ActionType> => async (dispatch) =>
         localStorage.removeItem('token')
         dispatch(actions.setData(null))
         webSocketApi.stop()
+        stopListening()
+        stopOnlineStatusListening()
     }).catch(error => {
         dispatch(actions.setErrorMessage(error.response?.data?.message))
     }).finally(() => {

@@ -2,6 +2,7 @@ import { Action } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { createBaseActions, createBaseInitialsState } from "../redux/functions";
 import { RootState } from "../redux/redux";
+import { SubscriberType } from "./webSocket";
 
 export type BaseThunkActionType<A extends Action> = ThunkAction<Promise<void>, RootState, unknown, A>
 
@@ -16,3 +17,9 @@ export interface ReducerState<D> {
 }
 
 export type ThunkType = ThunkDispatch<RootState, unknown, any>
+
+export type EventHandlersType = {
+    [key: string]: SubscriberType<any>
+}
+
+

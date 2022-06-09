@@ -52,9 +52,9 @@ const createChannel = (token: string) => {
     socket.on<EmitEventTypes>('userConnected', (user: UserSocketsData) => {
         subscribers['userConnected'].forEach(cb => cb(user))
     })
-    socket.on<EmitEventTypes>('userDisconnected', (userId: number) => [
+    socket.on<EmitEventTypes>('userDisconnected', (userId: number) => {
         subscribers['userDisconnected'].forEach(cb => cb(userId))
-    ])
+    })
     socket.on<EmitEventTypes>('message', (data: MessageType) => {
         subscribers['message'].forEach(cb => cb(data))
     })
@@ -71,7 +71,7 @@ const api = {
         createChannel(token)
     },
     stop() {
-        socket = null
+        socket?.close()
     },
     subscribe: function(cb: SubscriberType<any>, event: EmitEventTypes) {
         subscribers[event].push(cb)

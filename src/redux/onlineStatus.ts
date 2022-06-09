@@ -1,8 +1,8 @@
 import { createAction, createReducer } from "@reduxjs/toolkit"
-import { BaseThunkActionType, PropertiesType } from "../types/redux"
-import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState } from "./functions"
+import { BaseThunkActionType, EventHandlersType, PropertiesType } from "../types/redux"
+import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState, subscribeCallback, unSubscribeCallback } from "./functions"
 import { UserSocketsData } from "../types/onlineStatus"
-import webSocketApi from '../api/webSocket'
+import { EmitEventTypes } from '../api/webSocket'
 
 const initialState = {
     ...createBaseInitialsState<UserSocketsData[]>(),
@@ -20,19 +20,32 @@ const actions = {
 
 type ActionType = ReturnType<PropertiesType<typeof actions>>
 
+const eventCallbacks: EventHandlersType = {}
+
 export const startListening = (): BaseThunkActionType<ActionType> => async (dispatch) => {
-    webSocketApi.subscribe((users: UserSocketsData[]) => {
-        dispatch(actions.setData(users))
-    }, 'onlineUsers')
-    webSocketApi.subscribe((user: UserSocketsData) => {
-        dispatch(actions.userConnected(user))
-    }, 'userConnected')
-    webSocketApi.subscribe((userId: number) => {
-        dispatch(actions.userDisconnected(userId))
-    }, 'userDisconnected')
-    webSocketApi.subscribe((onlineStatus: boolean) => {
-        dispatch(actions.myOnlineStatusChanged(onlineStatus))
-    }, 'onlineStatusChanged') 
+    const eventHandlers: EventHandlersType = {
+        'onlineUsers': (users: UserSocketsData[]) => {
+            dispatch(actions.setData(users))
+        },
+        'userConnected': (user: UserSocketsData) => {
+            dispatch(actions.userConnected(user))
+        },
+        'userDisconnected': (userId: number) => {
+            dispatch(actions.userDisconnected(userId))
+        },
+        'onlineStatusChanged': (onlineStatus: boolean) => {
+            dispatch(actions.myOnlineStatusChanged(onlineStatus))
+        }    
+    } as const 
+    
+    for(let event in eventHandlers) {
+        const callback = eventHandlers[event]
+        subscribeCallback(eventCallbacks, callback, event as EmitEventTypes)
+    }
+}
+
+export const stopListening = () => {
+    unSubscribeCallback(eventCallbacks)
 }
 
 export default createReducer(initialState, (builder) => {
