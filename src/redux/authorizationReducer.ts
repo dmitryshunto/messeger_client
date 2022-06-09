@@ -1,9 +1,9 @@
-import { BaseThunkActionType, PropertiesType } from '../types/redux'
+import { BaseThunkActionType, EventHandlersType, PropertiesType } from '../types/redux'
 import { MyProfileData, UserAuthorizationData, UserRegistrationFormData, ValidationError } from '../types/users'
 import authorizationAPI from '../api/authorization'
 import webSocketApi from '../api/webSocket'
 import { createAction, createReducer } from '@reduxjs/toolkit'
-import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState } from './functions'
+import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState, subscribeCallback, unSubscribeCallback } from './functions'
 import { startListening as startOnlineStatusListening } from './onlineStatus'
 import { dataReceivingErrMsg, serverError } from '../config'
 import { SubscriberType } from '../types/webSocket'
@@ -42,7 +42,6 @@ export const authorizeUser = (data: UserAuthorizationData): BaseThunkActionType<
             localStorage.setItem('token', response.data.data.tokens['accessToken'])
             dispatch(actions.setErrorMessage(null))
             webSocketApi.start(response.data.data.tokens.accessToken)
-            dispatch(startOnlineStatusListening())
             dispatch(startListening())
         } else {
             dispatch(actions.setErrorMessage(dataReceivingErrMsg))
@@ -65,7 +64,6 @@ export const createUser = (data: UserRegistrationFormData): BaseThunkActionType<
             dispatch(actions.setValidationErrors(null))
             dispatch(actions.setErrorMessage(null))
             dispatch(startListening())
-            dispatch(startOnlineStatusListening())
         } else {
             dispatch(actions.setErrorMessage(dataReceivingErrMsg))
         }
@@ -88,7 +86,6 @@ export const logout = (): BaseThunkActionType<ActionType> => async (dispatch) =>
         dispatch(actions.setData(null))
         webSocketApi.stop()
         stopListening()
-        stopOnlineStatusListening()
     }).catch(error => {
         dispatch(actions.setErrorMessage(error.response?.data?.message))
     }).finally(() => {
@@ -104,7 +101,6 @@ export const checkAuth = (): BaseThunkActionType<ActionType> => async (dispatch)
             localStorage.setItem('token', response.data.data.tokens['accessToken'])
             webSocketApi.start(response.data.data.tokens.accessToken)
             dispatch(startListening())
-            dispatch(startOnlineStatusListening())
         }
     }).catch(error => {
         const errorMessage = 'Please sing in!'
@@ -114,22 +110,21 @@ export const checkAuth = (): BaseThunkActionType<ActionType> => async (dispatch)
     })
 }
 
-let messageSentCallback: SubscriberType<MessageType> | null = null
+const eventCallbacks: EventHandlersType = {}
 
 export const startListening = (): BaseThunkActionType<ActionType> => async (dispatch) => {
-    if (!messageSentCallback) {
-        messageSentCallback = (message) => {
+    dispatch(startOnlineStatusListening())
+    const eventHandlers: EventHandlersType = {
+        'message': (message) => {
             dispatch(actions.messageSent(message.chatId))
         }
-        webSocketApi.subscribe(messageSentCallback, 'message')
     }
+    subscribeCallback(eventCallbacks, eventHandlers)
 }
 
 export const stopListening = () => {
-    if (messageSentCallback) {
-        webSocketApi.subscribe(messageSentCallback, 'message')()
-        messageSentCallback = null
-    }
+    stopOnlineStatusListening()
+    unSubscribeCallback(eventCallbacks)
     webSocketApi.stop()
 }
 

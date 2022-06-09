@@ -1,10 +1,8 @@
 import { createAction, createReducer } from "@reduxjs/toolkit"
 import { ChatData, MessageType } from "../types/chats"
-import { BaseThunkActionType, PropertiesType } from "../types/redux"
-import { addBaseCasesToBuilder, apiRequestHandler, createBaseActions, createBaseInitialsState } from "./functions"
+import { BaseThunkActionType, EventHandlersType, PropertiesType } from "../types/redux"
+import { addBaseCasesToBuilder, apiRequestHandler, createBaseActions, createBaseInitialsState, subscribeCallback, unSubscribeCallback } from "./functions"
 import chatApi from '../api/chats'
-import { SubscriberType } from "../types/webSocket"
-import webSocketApi from '../api/webSocket'
 
 const initialState = {
     ...createBaseInitialsState<ChatData[]>(true),
@@ -26,35 +24,22 @@ export const getChats = (): BaseThunkActionType<ActionType> => async (dispatch) 
     dispatch(startListening())
 }
 
-let messageCallback: SubscriberType<MessageType> | null = null
-let chatCreatedCallback: SubscriberType<ChatData> | null = null
+const eventCallbacks: EventHandlersType = {}
 
 export const startListening = (): BaseThunkActionType<ActionType> => async (dispatch, getState) => {
-    if(!messageCallback) {
-        // here we are checking existing callback, if it doesnt exist we assign it the value and make the subcription
-        messageCallback = (message: MessageType) => {
+    const eventHandlers: EventHandlersType = {
+        'message': (message: MessageType) => {
             dispatch(actions.newMessage(message.chatId))
-        }
-        webSocketApi.subscribe(messageCallback, 'message')
-    }
-    if(!chatCreatedCallback) {
-        // here we are checking existing callback, if it doesnt exist we assign it the value and make the subcription
-        chatCreatedCallback = (data: ChatData) => {
+        },
+        'chatCreated': (data: ChatData) => {
             dispatch(actions.newChat(data))
         }
-        webSocketApi.subscribe(chatCreatedCallback, 'chatCreated')
     }
+    subscribeCallback(eventCallbacks, eventHandlers)
 }
 
 export const stopListening = () => {
-    if (messageCallback) {
-        webSocketApi.subscribe(messageCallback, 'message')()
-        messageCallback = null
-    }
-    if (chatCreatedCallback) {
-        webSocketApi.subscribe(chatCreatedCallback, 'chatCreated')()
-        chatCreatedCallback = null
-    }
+    unSubscribeCallback(eventCallbacks)
 }
 
 export default createReducer(initialState, (builder) => {

@@ -79,10 +79,13 @@ export function apiRequestHandler<D, F extends AnyFunction>(apiRequest: AxiosRes
     })
 }
 
-export function subscribeCallback<D>(eventCallbacks: EventHandlersType, callback: SubscriberType<D>, event: EmitEventTypes) {
-    if(!eventCallbacks[event]) {
-        eventCallbacks[event] = callback
-        webSocketApi.subscribe(callback, event)
+export function subscribeCallback(eventCallbacks: EventHandlersType, eventHandlers: EventHandlersType) {
+    for(let event in eventHandlers) {
+        const callback = eventHandlers[event]
+        if(!eventCallbacks[event]) {
+            eventCallbacks[event] = callback
+            webSocketApi.subscribe(callback, event as EmitEventTypes)
+        }   
     }
 }
 
@@ -90,5 +93,6 @@ export const unSubscribeCallback = (eventCallbacks: EventHandlersType) => {
     for(let event in eventCallbacks) {
         const callback = eventCallbacks[event]
         webSocketApi.subscribe(callback, event as EmitEventTypes)()
+        delete eventCallbacks[event]
     }
 }

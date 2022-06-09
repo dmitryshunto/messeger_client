@@ -2,7 +2,6 @@ import { createAction, createReducer } from "@reduxjs/toolkit"
 import { BaseThunkActionType, EventHandlersType, PropertiesType } from "../types/redux"
 import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState, subscribeCallback, unSubscribeCallback } from "./functions"
 import { UserSocketsData } from "../types/onlineStatus"
-import { EmitEventTypes } from '../api/webSocket'
 
 const initialState = {
     ...createBaseInitialsState<UserSocketsData[]>(),
@@ -37,11 +36,7 @@ export const startListening = (): BaseThunkActionType<ActionType> => async (disp
             dispatch(actions.myOnlineStatusChanged(onlineStatus))
         }    
     } as const 
-    
-    for(let event in eventHandlers) {
-        const callback = eventHandlers[event]
-        subscribeCallback(eventCallbacks, callback, event as EmitEventTypes)
-    }
+    subscribeCallback(eventCallbacks, eventHandlers)
 }
 
 export const stopListening = () => {

@@ -1,11 +1,11 @@
 import { createAction, createReducer } from "@reduxjs/toolkit"
-import { BaseThunkActionType, PropertiesType } from "../types/redux"
-import { addBaseCasesToBuilder, apiRequestHandler, createBaseActions, createBaseInitialsState } from "./functions"
+import { BaseThunkActionType, EventHandlersType, PropertiesType } from "../types/redux"
+import { addBaseCasesToBuilder, apiRequestHandler, createBaseActions, createBaseInitialsState, subscribeCallback, unSubscribeCallback } from "./functions"
 import chatApi from '../api/chats'
 import { BaseMessageData, GetMessagesResponse, MessageType } from "../types/chats"
 import webSocketApi from '../api/webSocket'
 import { dataReceivingErrMsg } from "../config"
-import { ReadMessageData, SubscriberType } from "../types/webSocket"
+import { ReadMessageData } from "../types/webSocket"
 import {actions as authActions} from './authorizationReducer'
 
 const initialState = {
@@ -109,16 +109,11 @@ export const getMoreMessages = (): BaseThunkActionType<ActionType> => async (dis
     }
 }
 
-// we need the callback name (message) to be able subcribe/unsubscribe
+const eventCallbacks: EventHandlersType = {}
 
-let messageCallback: SubscriberType<MessageType> | null = null
-let readMessageCallback: SubscriberType<ReadMessageData> | null = null
-// type for Action from authReducer
-// type ReadMessageActionType = ReturnType<PropertiesType<typeof authActions>>
 export const startListening = (): BaseThunkActionType<ActionType> => async (dispatch, getState) => {
-    if(!messageCallback) {
-        // here we are checking existing callback, if it doesnt exist we assign it the value and make the subcription
-        messageCallback = (message: MessageType) => {
+    const eventHandlers: EventHandlersType = {
+        'message': (message: MessageType) => {
             const state = getState()
             const userId = state.authorization.data?.id
             dispatch(actions.messageSent(message))
@@ -128,29 +123,19 @@ export const startListening = (): BaseThunkActionType<ActionType> => async (disp
                 dispatch(actions.setUserLastReadMessageId(userId, message.id))
                 dispatch(divideReadUnreadMessages())
             }
-        }
-        webSocketApi.subscribe(messageCallback, 'message')
-    }
-    if(!readMessageCallback) {
-        readMessageCallback = (data: ReadMessageData) => {
+        },
+        'messageRead': (data: ReadMessageData) => {
             const state = getState()
             if(state.messages.chatId === data.chatId) {
                 dispatch(actions.setUserLastReadMessageId(data.userId, data.messageId))
             }
-        }
-        webSocketApi.subscribe(readMessageCallback, 'messageRead')
-    }
+        }    
+    } as const
+    subscribeCallback(eventCallbacks, eventHandlers)   
 }
 
 export const stopListening = () => {
-    if(messageCallback)  {
-        webSocketApi.subscribe(messageCallback, 'message')()
-        messageCallback = null
-    }
-    if(readMessageCallback)  {
-        webSocketApi.subscribe(readMessageCallback, 'messageRead')()
-        readMessageCallback = null
-    }
+    unSubscribeCallback(eventCallbacks)
 }
 
 export const sendMessage = (chatId: number, messageText: string): BaseThunkActionType<ActionType> => async (dispatch, getState) => {
