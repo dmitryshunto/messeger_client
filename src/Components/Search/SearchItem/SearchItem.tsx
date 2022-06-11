@@ -18,6 +18,7 @@ const SearchItem: React.FC<Props> = (props) => {
             <Link to={`${routes['profile']}${props.id}`}>
                 <ShowAvatar
                     src={props.photoUrl}
+                    size = {64}
                 />
                 <div className = {css.userLogin}>
                     <div className = {css.test}>

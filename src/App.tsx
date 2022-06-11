@@ -39,7 +39,7 @@ function App() {
     }
   }, [dispatch])
 
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(window.innerWidth < 800)
 
   if (useSelector(authSelectors.isGettingData)) return <PreloaderPage />
 

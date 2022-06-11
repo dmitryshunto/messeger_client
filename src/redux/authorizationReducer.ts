@@ -63,6 +63,7 @@ export const createUser = (data: UserRegistrationFormData): BaseThunkActionType<
             localStorage.setItem('token', response.data.data.tokens['accessToken'])
             dispatch(actions.setValidationErrors(null))
             dispatch(actions.setErrorMessage(null))
+            webSocketApi.start(response.data.data.tokens.accessToken)
             dispatch(startListening())
         } else {
             dispatch(actions.setErrorMessage(dataReceivingErrMsg))

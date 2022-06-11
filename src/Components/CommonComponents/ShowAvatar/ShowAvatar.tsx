@@ -4,13 +4,15 @@ import React from 'react'
 
 type Props = {
     src?: string | null
+    size?: 'large' | 'small' | 'default' | number
 }
 
-const ShowAvatar: React.FC<Props> = ({ src }) => {
+const ShowAvatar: React.FC<Props> = ({ src, size }) => {
     return (
         <Avatar
             src={src}
             icon={<UserOutlined />}
+            size={size}
         />
     )
 }

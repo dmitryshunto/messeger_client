@@ -1,0 +1,15 @@
+.welcomePage {
+    width: 70%;
+    margin: 200px auto;
+    text-align: center;
+    color: rgb(79, 131, 133);
+}
+
+.header {
+    font-size: x-large;
+    padding-bottom: 1%;
+}
+
+.instruction {
+    font-size: larger;
+}

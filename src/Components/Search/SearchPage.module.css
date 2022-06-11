@@ -31,7 +31,5 @@
 @media (max-width: 1000px) {
     .searchInptut, .searchItem {
         width: 98%;
-        margin-left: 1%;
-        margin-top: 1%;
     }
 }

@@ -5,17 +5,19 @@ import { authorizeUser } from '../../redux/authorizationReducer'
 import { AppDispatch } from '../../redux/redux'
 import authSelectors from '../../selectors/auth'
 import { UserAuthorizationData } from '../../types/users'
-import {Navigate} from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { routes } from '../../config'
 import { withErrorMessage } from '../../HOC/withErrorMessage'
+import css from './LoginPage.module.css'
+import { actions } from './../../redux/authorizationReducer';
 
 const LoginPage: React.FC = () => {
     const userData = useSelector(authSelectors.data)
     const isGettingData = useSelector(authSelectors.isGettingData)
     const dispatch: AppDispatch = useDispatch()
-    
-    if(userData) return <Navigate to = {routes['myProfile']}/>
-    
+
+    if (userData) return <Navigate to={routes['myProfile']} />
+
     const onFinish = (values: UserAuthorizationData) => {
         dispatch(
             authorizeUser(values)
@@ -23,32 +25,36 @@ const LoginPage: React.FC = () => {
     }
 
     return (
-        <div>
+        <div className = {css.loginForm}>
             <Form
                 name="login"
                 onFinish={onFinish}
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 10 }}
                 autoComplete="off"
             >
                 <Form.Item
-                    label="Login"
+                    label="Login:"
                     name="login"
                     rules={[{ required: true, message: 'Please input your login!' }]}
                 >
-                    <Input 
+                    <Input
                         placeholder='Login'
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Password"
+                    label="Password:"
                     name="password"
                     rules={[{ required: true, message: 'Please input your password!' }]}
                 >
-                    <Input.Password 
+                    <Input.Password
                         placeholder='Password'
                     />
                 </Form.Item>
-                <Form.Item>
-                    <Button disabled = {isGettingData} type="primary" htmlType="submit">
+                <Form.Item
+                    wrapperCol={{ offset: 7, span: 16 }}
+                >
+                    <Button disabled={isGettingData} type="primary" htmlType="submit">
                         Submit
                     </Button>
                 </Form.Item>
@@ -57,5 +63,5 @@ const LoginPage: React.FC = () => {
     )
 }
 
-export default withErrorMessage(LoginPage, authSelectors.errorMessage)
+export default withErrorMessage(LoginPage, authSelectors.errorMessage, actions.setErrorMessage)
 

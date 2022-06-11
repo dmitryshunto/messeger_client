@@ -49,4 +49,4 @@ const SearchPage: React.FC = () => {
     )
 }
 
-export default withAuthRedirect(withErrorMessage(SearchPage, usersSelectors.errorMessage))
+export default withAuthRedirect(withErrorMessage(SearchPage, usersSelectors.errorMessage, actions.setErrorMessage))

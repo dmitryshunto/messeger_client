@@ -1,0 +1,48 @@
+.chat {
+    margin-left: 1%;
+    margin-top: 1%;
+    width: 50%;
+    border-radius: 5px;
+    background-color: rgb(120, 149, 237);
+    padding: 0.5%
+}
+.chat > a {
+    display: flex;
+    align-items: center;
+}
+
+.chat:hover {
+    background-color: rgb(100, 149, 237);
+}
+
+.newMessageChat {
+    background-color: rgb(181, 181, 181);
+}
+
+.avatar {
+    position: relative;
+    display: inline-block;
+    margin-right: 1%;
+}
+.avatar > div:last-child {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
+.login {
+    font-size: 18px;
+    color: rgb(253, 253, 253);
+    display: flex;
+    align-items: center;
+}
+
+.login > div:first-child {
+    margin-right: 5px;
+}
+
+@media (max-width: 1000px) {
+    .chat {
+        width: 98%;
+    }
+}

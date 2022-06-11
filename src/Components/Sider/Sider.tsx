@@ -65,8 +65,7 @@ const MySider: React.FC<Props> = ({collapsed}) => {
     }, [newMessagesNumber])
 
     const menuItems = login ? authorizedUserMenuItems : unauthorizedUserMenuItems
-
-
+    
     return (
         <Sider
             trigger={null} collapsible

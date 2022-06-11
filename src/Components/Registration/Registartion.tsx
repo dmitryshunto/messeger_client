@@ -11,8 +11,10 @@ import { Navigate } from 'react-router-dom'
 import FormItem from './FormItem/FormItem'
 import { getValidationErrorByFieldName } from '../../functions/common'
 import { Rule } from 'antd/lib/form'
-import ErrorMessage from '../ErrorMessage/ErrorMessage'
 import AvatarEditor from 'react-avatar-edit'
+import css from './Registration.module.css'
+import { actions } from './../../redux/authorizationReducer';
+import { withErrorMessage } from './../../HOC/withErrorMessage';
 
 type FieldDataItem = {
     isPassword: boolean
@@ -58,7 +60,6 @@ const RegistrationPage: React.FC = () => {
     const userData = useSelector(authSelectors.data)
     const creatingUserSuccessMessage = useSelector(authSelectors.creatingUserSuccessMessage)
     const validationErrors = useSelector(authSelectors.validationErrors)
-    const errorMessage = useSelector(authSelectors.errorMessage)
     const [avatarUrl, setAvatarUrl] = useState<null | string>(null)
 
     useEffect(() => {
@@ -104,36 +105,40 @@ const RegistrationPage: React.FC = () => {
     })
 
     return (
-        <div>
+        <div className = {css.registrationForm}>
             <Form
                 name="login"
                 onFinish={onFinish}
                 autoComplete={'on'}
                 encType={'multipart/form-data'}
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 10 }}
             >
                 {
                     formItems
                 }
                 <Form.Item
                     name={'file'}
+                    label = 'choose a avatar'
                 >
                     <AvatarEditor 
                         onCrop={onCrop}
-                        width = {300}
-                        height = {300}
+                        width = {180}
+                        height = {180}
                     />
                 </Form.Item>
-                <Form.Item>
+                <Form.Item
+                    wrapperCol = {
+                        {offset: 7}
+                    }
+                >
                     <Button disabled={isGettingData} type="primary" htmlType="submit">
                         Submit
                     </Button>
                 </Form.Item>
             </Form>
-            <ErrorMessage
-                message={errorMessage}
-            />
         </div>
     )
 }
 
-export default RegistrationPage
+export default withErrorMessage(RegistrationPage, authSelectors.errorMessage, actions.setErrorMessage)

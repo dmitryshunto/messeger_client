@@ -24,6 +24,7 @@ export interface ChatData {
     name: string
     newMessages: number | null
     chatPhotoUrl: string | null
+    companionId: number | null
 }
 
 export interface MembersData {
