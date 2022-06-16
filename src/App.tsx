@@ -41,16 +41,20 @@ function App() {
 
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800)
 
-  if (useSelector(authSelectors.isGettingData)) return <PreloaderPage />
+  if (useSelector(authSelectors.isGettingData)) return <PreloaderPage fullPage/>
 
   return (
     <BrowserRouter>
-      <Layout className='siteLayout'>
+      <Layout 
+        className={'siteLayout'}
+      >
         <MyHeader 
           collapsed = {collapsed}
           setCollapsed = {setCollapsed}
         />
-        <Layout>
+        <Layout
+          className={'contentLayout'}
+        >
           <MySider 
             collapsed = {collapsed}
           />

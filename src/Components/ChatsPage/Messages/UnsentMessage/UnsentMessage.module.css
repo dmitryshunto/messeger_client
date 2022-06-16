@@ -1,0 +1,8 @@
+.redPoint {
+    width: 6px;
+    height: 6px;
+    background-color: rgb(233, 0, 0);
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 4px;
+}

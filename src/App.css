@@ -1,4 +1,32 @@
 .siteLayout {
     min-height: 100vh;
     max-height: 100vh;
+    background-color: white;
+    width: 70%;
+    margin: 0 auto;
+}
+
+.contentLayout {
+    background-color: white;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgb(182, 182, 182);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(131, 131, 131);
+  }
+
+@media (max-width: 1000px) {
+    .siteLayout {
+        width: 100%;
+    }
 }

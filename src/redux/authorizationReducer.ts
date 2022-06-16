@@ -6,13 +6,11 @@ import { createAction, createReducer } from '@reduxjs/toolkit'
 import { addBaseCasesToBuilder, createBaseActions, createBaseInitialsState, subscribeCallback, unSubscribeCallback } from './functions'
 import { startListening as startOnlineStatusListening } from './onlineStatus'
 import { dataReceivingErrMsg, serverError } from '../config'
-import { SubscriberType } from '../types/webSocket'
-import { MessageType } from '../types/chats'
-import UIfx from 'uifx'
 import {stopListening as stopOnlineStatusListening} from './onlineStatus'
+import { MessageType } from '../types/chats'
 
 const notificationSoundFile = require('../sounds/newPrediction.mp3')
-const notificationSound = new UIfx(notificationSoundFile)
+const notificationSound = new Audio(notificationSoundFile)
 
 const initialState = {
     ...createBaseInitialsState<MyProfileData>(true),
@@ -28,7 +26,7 @@ export const actions = {
     ...baseActions,
     setCreatingUserSuccessMesage: createAction<string | null>(`${reducerKey}/SET_CREATING_USER_SUCCESS_MESSAGE`),
     setValidationErrors: createAction<ValidationError[] | null>(`${reducerKey}/SET_VALIDATION_ERRORS`),
-    messageSent: createAction<number>(`${reducerKey}/messageSent`),
+    messageSent: createAction<MessageType>(`${reducerKey}/messageSent`),
     messageRead: createAction<number>(`${reducerKey}/messageRead`)
 }
 
@@ -116,8 +114,8 @@ const eventCallbacks: EventHandlersType = {}
 export const startListening = (): BaseThunkActionType<ActionType> => async (dispatch) => {
     dispatch(startOnlineStatusListening())
     const eventHandlers: EventHandlersType = {
-        'message': (message) => {
-            dispatch(actions.messageSent(message.chatId))
+        'message': (message: MessageType) => {
+            dispatch(actions.messageSent(message))
         }
     }
     subscribeCallback(eventCallbacks, eventHandlers)
@@ -140,10 +138,10 @@ export default createReducer(initialState, (builder) => {
         })
         .addCase(actions.messageSent, (state, action) => {
             const newMessages = state.data?.newMessages
-            if (newMessages && !newMessages.find(chatId => chatId === action.payload)) {
-                newMessages.push(action.payload)
-                notificationSound.play()
+            if (newMessages && !newMessages.find(chatId => chatId === action.payload.chatId)) {
+                newMessages.push(action.payload.chatId)
             }
+            if(action.payload.userId !== state.data?.id) notificationSound.play()
         })
         .addCase(actions.messageRead, (state, action) => {
             if (state.data) {

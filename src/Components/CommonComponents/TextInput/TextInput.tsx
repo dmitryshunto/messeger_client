@@ -1,4 +1,6 @@
+import { Button } from "antd"
 import React from "react"
+import css from './TextInput.module.css'
 
 type Props = {
     value: string
@@ -9,13 +11,19 @@ type Props = {
 
 const TextInput: React.FC<Props> = (props) => {
     return (
-        <div>
-            <input 
-                type={'text'}
+        <div className = {css.textInput}>
+            <textarea
+                className={css.textArea} 
                 value = {props.value}
                 onChange = {e => props.setValue(e.currentTarget.value)}
             />
-            <button disabled = {!!!props.value} onClick={props.onClick}>{props.buttonText}</button>
+            <Button 
+                disabled = {!!!props.value}
+                onClick={props.onClick}
+                type= 'primary'
+            >
+                    {props.buttonText}
+            </Button>
         </div>
     )
 }

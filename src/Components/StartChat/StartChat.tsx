@@ -9,7 +9,7 @@ import startChatSelectors from '../../selectors/startChat'
 import TextInput from "../CommonComponents/TextInput/TextInput"
 import PreloaderPage from "../PreloaderPage/PreloaderPage"
 import { actions } from './../../redux/startChatReducer';
-
+import css from './StartChat.module.css'
 
 const StartChat: React.FC = () => {
     const {companionId} = useParams<{companionId: string}>()
@@ -27,7 +27,9 @@ const StartChat: React.FC = () => {
     if(data?.chatId) return <Navigate to = {`${routes['chats']}/${data.chatId}`} />
 
     return (
-        <div>
+        <div
+            className = {css.startChat} 
+        >
             <h1>Start chat with {data?.companionLogin}</h1>
             <TextInput
                 buttonText="Start chat" 

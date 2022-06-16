@@ -1,0 +1,21 @@
+.myProfile {
+    width: 90%;
+    margin: 2% auto;
+}
+
+.profileTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.login {
+    font-size: large;
+    font-weight: bolder;
+    display: flex;
+    align-items: center;
+}
+
+.login > div:first-child {
+    margin-right: 5px;
+}

@@ -1,0 +1,47 @@
+.message {
+    margin-left: 1%;
+    margin-top: 1%;
+    margin-right: 1%;
+    border-radius: 5px;
+}
+
+.message.own {
+    text-align: right;
+}
+
+.message.own .messageText {
+    background-color: rgb(245, 241, 241);
+    color: black;
+}
+
+.messageText {
+    background-color: #1877f2;
+    font-size: 15px;
+    margin-left: 1%;
+    padding: 6px;
+    border-radius: 12px;
+    color: white;
+    max-width: 400px;
+    word-wrap: break-word;
+    display: inline-block;
+}
+
+.messageBottom {
+    font-size: 12px;
+    color: rgb(129, 129, 129);
+    display: flex;
+}
+
+.messageBottom > div:first-child {
+    margin-right: 4px;
+}
+
+.message.own .messageBottom {
+    justify-content: end;
+}
+
+@media (max-width: 800px) {
+    .message {
+        width: 98%;
+    }
+}

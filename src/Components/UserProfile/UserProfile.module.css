@@ -1,0 +1,30 @@
+.userProfile {
+    width: 90%;
+    margin: 2% auto;
+}
+
+.profileTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profileTop > div:last-child {
+    font-size: large;
+    font-weight: bolder;
+}
+
+.avatarBlock {
+    display: flex;
+    flex-direction: column;
+}
+
+.avatarBlock a {
+    margin-top: 5px;
+    background-color: #1877f2;
+    height: 32px;
+    padding: 4px;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+}

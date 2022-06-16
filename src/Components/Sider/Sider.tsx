@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Layout, Menu } from 'antd'
 import {
@@ -15,6 +15,7 @@ import type { MenuProps } from 'antd';
 import ProfileButton from './ProfileButton/ProfileButton'
 import { logout as logoutThunk } from '../../redux/authorizationReducer'
 import { AppDispatch } from '../../redux/redux'
+import css from './Sider.module.css'
 
 type MenuItemType = Required<MenuProps>['items'][number]
 
@@ -77,6 +78,7 @@ const MySider: React.FC<Props> = ({collapsed}) => {
                     collapsed = {collapsed}
                 />}
             <Menu
+                className = {css.siderMenu}
                 items={menuItems}
             />
         </Sider>

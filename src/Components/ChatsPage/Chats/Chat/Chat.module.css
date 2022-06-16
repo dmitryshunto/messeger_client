@@ -1,9 +1,7 @@
 .chat {
-    margin-left: 1%;
-    margin-top: 1%;
-    width: 50%;
+    margin: 1% auto;
+    width: 90%;
     border-radius: 5px;
-    background-color: rgb(120, 149, 237);
     padding: 0.5%
 }
 .chat > a {
@@ -12,27 +10,16 @@
 }
 
 .chat:hover {
-    background-color: rgb(100, 149, 237);
+    background-color: rgb(105, 156, 250);
 }
 
 .newMessageChat {
     background-color: rgb(181, 181, 181);
 }
 
-.avatar {
-    position: relative;
-    display: inline-block;
-    margin-right: 1%;
-}
-.avatar > div:last-child {
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-}
-
 .login {
     font-size: 18px;
-    color: rgb(253, 253, 253);
+    color: black;
     display: flex;
     align-items: center;
 }

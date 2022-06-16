@@ -6,12 +6,11 @@ export interface BaseMessageData {
 
 export interface MessageType extends BaseMessageData {
     id: number
-    createdAT: string
+    createdAt: number
 }
 
 export interface UIMessageData extends MessageType {
-    isSending: boolean
-    sendingSuccess: null | boolean // null means no sending, true/false means success/unsuccess sending
+    isOwn: boolean
 }
 
 export interface StartingPrivateChatInfo {
@@ -37,6 +36,7 @@ export interface MembersData {
 export type GetMessagesResponse = {
     messages: MessageType[]
     membersData: MembersData[]
+    isAllMessages: boolean
 }
 
 export type ChatNewMessageInfo = {

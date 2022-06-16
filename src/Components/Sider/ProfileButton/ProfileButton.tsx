@@ -5,8 +5,9 @@ import authSelectors from '../../../selectors/auth'
 import onlineStatusSelectors from '../../../selectors/onlineStatus'
 import { Link } from "react-router-dom";
 import css from './ProfileButton.module.css'
-import OnlineStatus from "../../CommonComponents/OnlineStatus/OnlineStatus";
-import ShowAvatar from "../../CommonComponents/ShowAvatar/ShowAvatar";
+import OnlineStatus from "../../CommonComponents/OnlineStatus/OnlineStatus"
+import { Avatar } from 'antd'
+import { UserOutlined } from "@ant-design/icons";
 
 type Props = {
     collapsed: boolean
@@ -26,8 +27,9 @@ const ProfileButton: React.FC<Props> = ({ collapsed }) => {
         <div className={css.profileButton}>
             <div>
                 <Link to={routes['myProfile']}>
-                    <ShowAvatar
+                    <Avatar
                         src={data?.photoUrl}
+                        icon = {<UserOutlined />}
                     />
                 </Link>
             </div>

@@ -1,0 +1,10 @@
+.avatar {
+    position: relative;
+    display: inline-block;
+    margin-right: 1%;
+}
+.avatar > div:last-child {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}

@@ -13,15 +13,12 @@ const Chat: React.FC<ChatData> = ({ name, id, newMessages, chatPhotoUrl, compani
     return (
         <div className={cn(css.chat, {[css.newMessageChat]: newMessages})}>
             <Link to={`${id}`}>
-                <div className={css.avatar}>
                     <ShowAvatar
                         src={chatPhotoUrl}
                         size={64}
+                        onlineStatus = {onlineStatus}
                     />
-                    <OnlineStatus
-                        onlineStatus={onlineStatus}
-                    />
-                </div>
+                
                 <div className={css.login}>
                     <div>{name}</div>
                     <NewMessage 

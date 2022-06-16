@@ -17,5 +17,12 @@
     color: aliceblue;
     font-size: 20px;
     font-weight: bolder;
-    margin-left: 10px;
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.appName img {
+    border-radius: 8px;
+    margin-right: 3px;
 }

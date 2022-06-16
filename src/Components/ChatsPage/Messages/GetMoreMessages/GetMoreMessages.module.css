@@ -1,0 +1,11 @@
+.moreButton {
+    text-align: center;
+}
+
+.moreButton > div {
+    display: inline-block;
+}
+
+.noMoreMess {
+    color: rgb(79, 131, 133);
+}

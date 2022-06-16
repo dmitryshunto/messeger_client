@@ -1,6 +1,6 @@
 .newMessages {
+    border-radius: 50%;
     padding-left: 5px;
     padding-right: 5px;
-    border-radius: 50%;
-    background-color: darkgreen;
+    background-color: rgb(0, 161, 0);
 }

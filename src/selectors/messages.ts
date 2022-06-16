@@ -8,9 +8,10 @@ const selectors = {
     data: (state: RootState) => state[key].data,
     unsentMessages: (state: RootState) => state[key].unsentMessages,
     isMoreMessagesReceiving: (state: RootState) => state[key].isMoreMessagesReceiving,
-    isAllMessagesReceived: (state: RootState) => state[key].isAllMesagesReceived,
+    isAllMessagesReceived: (state: RootState) => state[key].data?.isAllMessages,
     readMessages: (state: RootState) => state[key].readMessages,
-    unreadMessages: (state: RootState) => state[key].unreadMessages
+    unreadMessages: (state: RootState) => state[key].unreadMessages,
+    chatMembersData: (state: RootState) => state[key].data?.membersData
 }
 
 export default selectors

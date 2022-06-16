@@ -7,7 +7,7 @@ import usersSelectors from '../../selectors/users'
 import SearchItem from './SearchItem/SearchItem';
 import SearchInput from './SearchInput/SearchInput';
 import { withErrorMessage } from '../../HOC/withErrorMessage';
-import onlineStatusSelectors from '../../selectors/onlineStatus'
+import PageNotFound from '../CommonComponents/PageNotFound/PageNotFound';
 
 const SearchPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch()
@@ -18,20 +18,16 @@ const SearchPage: React.FC = () => {
         } 
     }, [dispatch])
 
-    const onlineUsers = useSelector(onlineStatusSelectors.data)
-
     const foundUsers = useSelector(usersSelectors.data)?.map(user => {        
-        const isOnline = onlineUsers?.some((onlineUser) => onlineUser.userId === user.id)
         return <SearchItem  key = {user.id}
                             id = {user.id}
                             photoUrl = {user.photoUrl}
-                            isOnline = {!!isOnline}
                             login = {user.login}
                 />
     })
 
     const onInputChange = useCallback((searchLogin: string) => {
-        dispatch(findUsers(searchLogin))
+        if(searchLogin && searchLogin.length > 2) dispatch(findUsers(searchLogin))
     }, [dispatch])  
 
     return (
@@ -40,7 +36,10 @@ const SearchPage: React.FC = () => {
                 callback={onInputChange}
             />
             {
-                foundUsers && !foundUsers.length && <div>No found users</div>
+                foundUsers && !foundUsers.length && 
+                    <PageNotFound 
+                        errMessage='No found users'
+                    />
             }
             {
                 foundUsers              

@@ -6,25 +6,40 @@ import { withErrorMessage } from '../../HOC/withErrorMessage';
 import PreloaderPage from '../PreloaderPage/PreloaderPage';
 import { withAuthRedirect } from '../../HOC/withAuthRedirect';
 import { useGettingData } from '../../hooks/useGettingData';
-import defaultAvatar from '../../Images/defaultAvatar.png'
 import Avatar from '../CommonComponents/Avatar/Avatar';
+import css from './MyProfile.module.css'
+import PageNotFound from './../CommonComponents/PageNotFound/PageNotFound';
+import ProfileInfo from '../CommonComponents/ProfileInfo/ProfileInfo';
+import OnlineStatus from '../CommonComponents/OnlineStatus/OnlineStatus';
+import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 
 const MyProfile: React.FC = () => {
     const data = useGettingData(getMyProfile, profileSelectors.data, actions.setInitialState)
-    const avatarSource = data?.photoUrl ? data.photoUrl : defaultAvatar
-    if(useSelector(profileSelectors.isGettingData)) return <PreloaderPage />
-
+    const onlineStatus = useOnlineStatus(data?.id || 0)
+    if (useSelector(profileSelectors.isGettingData)) return <PreloaderPage />
+    if (!data) return <PageNotFound />
     return (
-        <div>
-            <Avatar 
-                photoUrl={data?.photoUrl}
+        <div className={css.myProfile}>
+            <div className={css.profileTop}>
+                <Avatar
+                    photoUrl={data.photoUrl}
+                />
+                <div
+                    className={css.login}
+                >
+                    <div>
+                        {data.login}
+                    </div>
+                    <OnlineStatus
+                        onlineStatus={onlineStatus}
+                    />
+                </div>
+            </div>
+            <ProfileInfo
+                email={data.email}
+                firstName={data.firstName}
+                lastName={data.lastName}
             />
-            <div>
-                {data?.login}
-            </div>
-            <div>
-                {`${data?.firstName} ${data?.lastName}`}
-            </div>
         </div>
     )
 }

@@ -7,6 +7,7 @@ import PreloaderPage from '../../PreloaderPage/PreloaderPage'
 import Chat from './Chat/Chat'
 import chatsSelectors from '../../../selectors/chats'
 import { useGettingData } from '../../../hooks/useGettingData'
+import css from './Chats.module.css'
 
 const Chats: React.FC = () => {
     
@@ -19,7 +20,7 @@ const Chats: React.FC = () => {
         content = data.map(chat => <Chat key = {chat.id}
                                          {...chat} />)
     } else {
-        content = <div>No chats</div>
+        content = <div className={css.noChats}>No chats</div>
     }
     return (
         <div>
@@ -28,6 +29,6 @@ const Chats: React.FC = () => {
     )
 }
 
-let withErrorMessageComponent = withErrorMessage(Chats, chatsSelectors.errorMessage)
+let withErrorMessageComponent = withErrorMessage(Chats, chatsSelectors.errorMessage, actions.setErrorMessage)
 
 export default withAuthRedirect(withErrorMessageComponent)

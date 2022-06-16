@@ -3,6 +3,10 @@ import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../../redux/redux"
 import { BaseMessageData } from "../../../../types/chats"
 import { actions, resendUnsentMesage } from './../../../../redux/messagesReducer';
+import css from '../Message/Message.module.css'
+import { CloseOutlined, RedoOutlined } from "@ant-design/icons";
+import cn from 'classnames';
+import styles from './UnsentMessage.module.css'
 
 interface Props extends BaseMessageData {
     index: number
@@ -20,10 +24,23 @@ const UnsentMessage: React.FC<Props> = (props) => {
     }, [dispatch, props.chatId, props.body, props.index])
 
     return (
-        <div>
-            <button onClick={deleteMessage}>X</button>
-            <button onClick={resendMessage}>Resend</button>
-            {props.body}
+        <div
+            className={cn(css.message, css.own)}
+        >
+            <CloseOutlined 
+                onClick={deleteMessage}
+            />
+            <RedoOutlined 
+                onClick={resendMessage}
+            />
+            <div
+                className = {css.messageText}
+            >
+                {props.body}
+            </div>
+            <div 
+                className={styles.redPoint}
+            />
         </div>
     )
 }

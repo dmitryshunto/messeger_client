@@ -6,7 +6,7 @@ import { BaseMessageData, GetMessagesResponse, MessageType } from "../types/chat
 import webSocketApi from '../api/webSocket'
 import { dataReceivingErrMsg } from "../config"
 import { ReadMessageData } from "../types/webSocket"
-import {actions as authActions} from './authorizationReducer'
+import { actions as authActions } from './authorizationReducer'
 
 const initialState = {
     ...createBaseInitialsState<GetMessagesResponse>(true),
@@ -14,7 +14,6 @@ const initialState = {
     readMessages: [] as MessageType[],
     unreadMessages: [] as MessageType[],
     unsentMessages: [] as BaseMessageData[],
-    isAllMesagesReceived: false,
     isMoreMessagesReceiving: false
 }
 
@@ -35,7 +34,7 @@ export const actions = {
         return {
             payload: {
                 userId,
-                lastReadMessageId 
+                lastReadMessageId
             }
         }
     })
@@ -54,7 +53,7 @@ export const getMessages = (chatId: string): BaseThunkActionType<ActionType> => 
         dispatch(divideReadUnreadMessages())
         const newLastReadMessageId = messages[messages.length - 1].id
         webSocketApi.messageRead(newLastReadMessageId, +chatId)
-        dispatch(authActions.messageRead(+chatId))        
+        dispatch(authActions.messageRead(+chatId))
     }
 }
 
@@ -80,32 +79,31 @@ const divideReadUnreadMessages = (): BaseThunkActionType<ActionType> => async (d
             dispatch(actions.setUnreadMessages(messages))
         }
     }
-} 
+}
 
 export const getMoreMessages = (): BaseThunkActionType<ActionType> => async (dispatch, getState) => {
     const state = getState()
-    const chatId = state.messages.chatId
-    const oldestMessageId = state.messages.data?.messages[0].id
-    if (chatId && oldestMessageId) {
-        dispatch(actions.setIsMoreMessagesReceiving(true))
-        chatApi.getMessages(`${chatId}`, oldestMessageId).then(response => {
-            if (response.data.data) {
-                const additioanalMessages = response.data.data.messages
-                if (additioanalMessages.length) {
+    if (!state.messages.isMoreMessagesReceiving) {
+        const chatId = state.messages.chatId
+        const oldestMessageId = state.messages.data?.messages[0].id
+        if (chatId && oldestMessageId) {
+            dispatch(actions.setIsMoreMessagesReceiving(true))
+            chatApi.getMessages(`${chatId}`, oldestMessageId).then(response => {
+                if (response.data.data) {
+                    const additioanalMessages = response.data.data.messages
                     dispatch(actions.addMoreMessages(additioanalMessages))
                     dispatch(divideReadUnreadMessages())
+                    dispatch(actions.setErrorMessage(null))
+                    if (response.data.data.isAllMessages) dispatch(actions.allMessagesReceived())
                 } else {
-                    dispatch(actions.allMessagesReceived())
+                    dispatch(actions.setErrorMessage(dataReceivingErrMsg))
                 }
-                dispatch(actions.setErrorMessage(null))
-            } else {
-                dispatch(actions.setErrorMessage(dataReceivingErrMsg))
-            }
-        }).catch(error => {
-            dispatch(actions.setErrorMessage(error.response?.data?.message))
-        }).finally(() => {
-            dispatch(actions.setIsMoreMessagesReceiving(false))
-        })
+            }).catch(error => {
+                dispatch(actions.setErrorMessage(error.response?.data?.message))
+            }).finally(() => {
+                dispatch(actions.setIsMoreMessagesReceiving(false))
+            })
+        }
     }
 }
 
@@ -126,12 +124,12 @@ export const startListening = (): BaseThunkActionType<ActionType> => async (disp
         },
         'messageRead': (data: ReadMessageData) => {
             const state = getState()
-            if(state.messages.chatId === data.chatId) {
+            if (state.messages.chatId === data.chatId) {
                 dispatch(actions.setUserLastReadMessageId(data.userId, data.messageId))
             }
-        }    
+        }
     } as const
-    subscribeCallback(eventCallbacks, eventHandlers)   
+    subscribeCallback(eventCallbacks, eventHandlers)
 }
 
 export const stopListening = () => {
@@ -186,7 +184,7 @@ export default createReducer(initialState, (builder) => {
             if (state.data) state.data.messages = [...action.payload, ...state.data.messages]
         })
         .addCase(actions.allMessagesReceived, (state) => {
-            state.isAllMesagesReceived = true
+            if (state.data) state.data.isAllMessages = true
         })
         .addCase(actions.setIsMoreMessagesReceiving, (state, action) => {
             state.isMoreMessagesReceiving = action.payload
@@ -199,6 +197,6 @@ export default createReducer(initialState, (builder) => {
         })
         .addCase(actions.setUserLastReadMessageId, (state, action) => {
             const user = state.data?.membersData.find(member => member.id === action.payload.userId)
-            if(user) user.lastReadMessageId = action.payload.lastReadMessageId
+            if (user) user.lastReadMessageId = action.payload.lastReadMessageId
         })
 })

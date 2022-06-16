@@ -1,0 +1,24 @@
+.messagesPage {
+    height: 98%;
+    width: 90%;
+    background-color: white;
+    margin: 0.5% auto;
+    border: 1px solid darkgray;
+    border-radius: 2px;
+}
+
+.messagesPage > a:first-child {
+    border-bottom: 1px solid darkgray;
+}
+
+.messagesContainer {
+    height: calc(100% - 150px);
+    overflow-y: scroll;
+    border-bottom: 1px solid darkgray;
+}
+
+@media (max-width: 800px) {
+    .messagesPage {
+        width: 99%;
+    }
+}
