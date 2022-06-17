@@ -20,6 +20,7 @@ import MySider from './Components/Sider/Sider';
 import MyFooter from './Components/Footer/Footer';
 import './App.css'
 import MyHeader from './Components/Header/Header';
+import PageNotFound from './Components/CommonComponents/PageNotFound/PageNotFound';
 
 const { Content } = Layout;
 
@@ -41,22 +42,24 @@ function App() {
 
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800)
 
-  if (useSelector(authSelectors.isGettingData)) return <PreloaderPage fullPage/>
+  const userData = useSelector(authSelectors.data)
+
+  if (useSelector(authSelectors.isGettingData)) return <PreloaderPage fullPage />
 
   return (
     <BrowserRouter>
-      <Layout 
+      <Layout
         className={'siteLayout'}
       >
-        <MyHeader 
-          collapsed = {collapsed}
-          setCollapsed = {setCollapsed}
+        <MyHeader
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
         />
         <Layout
           className={'contentLayout'}
         >
-          <MySider 
-            collapsed = {collapsed}
+          <MySider
+            collapsed={collapsed}
           />
           <Content>
             <Routes>
@@ -64,12 +67,17 @@ function App() {
                 <Route index element={<Chats />} />
                 <Route path={`:chatId`} element={<MessagesPage />} />
               </Route>
+              <Route 
+                path = '/'
+                element = {userData ? <Chats /> : <LoginPage />}
+              />
               <Route path={`${routes['profile']}:id`} element={<UserProfile />} />
               <Route path={routes['login']} element={<LoginPage />} />
               <Route path={routes['myProfile']} element={<MyProfile />} />
               <Route path={routes['registration']} element={<RegistrationPage />} />
               <Route path={routes['search']} element={<SearchPage />} />
               <Route path={`${routes['startChat']}/:companionId`} element={<StartChat />} />
+              <Route path="*" element = {<PageNotFound />}/>
             </Routes>
           </Content>
         </Layout>
